@@ -9,14 +9,15 @@ import (
 )
 
 func main() {
+	p := getPuzzler()
 	fmt.Println("== sample input ====")
 	input := readInput("day01/sample")
-	result := day01.Part1(input)
+	result := p.Part1(input)
 	fmt.Println(result)
 
 	fmt.Println("== puzzle input ====")
 	input = readInput("day01/input")
-	result = day01.Part1(input)
+	result = p.Part1(input)
 	fmt.Println(result)
 }
 
@@ -33,4 +34,13 @@ func readInput(filename string) []string {
 	}
 
 	return lines
+}
+
+type puzzler interface {
+	Part1([]string) string
+	Part2([]string) string
+}
+
+func getPuzzler() puzzler {
+	return day01.Puzzler{}
 }
