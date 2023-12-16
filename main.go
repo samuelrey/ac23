@@ -15,14 +15,14 @@ type Puzzler interface {
 
 func main() {
 	day := "day01"
-	target := "sample"
+	target := "input"
 
 	puzzler := getPuzzler(day)
 
 	input := readInput(day, target)
 
 	displayResult(day, "Part1", puzzler.Part1(input))
-	displayResult(day, "Part2", puzzler.Part2(input))
+	// displayResult(day, "Part2", puzzler.Part2(input))
 }
 
 func getPuzzler(day string) Puzzler {
