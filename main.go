@@ -2,6 +2,7 @@ package main
 
 import (
 	"ac23/day01"
+	"ac23/day02"
 	"bufio"
 	"fmt"
 	"log"
@@ -14,27 +15,20 @@ type Puzzler interface {
 }
 
 func main() {
-	day := "day01"
-	target := "input"
+	puzzlerByID := map[string]Puzzler{
+		"day01": day01.Puzzler{},
+		"day02": day02.Puzzler{},
+	}
 
-	puzzler := getPuzzler(day)
+	day := "day02"
+	target := "sample"
+
+	puzzler := puzzlerByID[day]
 
 	input := readInput(day, target)
 
 	displayResult(day, "Part1", puzzler.Part1(input))
 	// displayResult(day, "Part2", puzzler.Part2(input))
-}
-
-func getPuzzler(day string) Puzzler {
-	var puzzler Puzzler
-	switch day {
-	case "day01":
-		puzzler = day01.Puzzler{}
-	default:
-		log.Fatalf("%s: pkg does not exist, duplicate day00 to get started\n", day)
-	}
-
-	return puzzler
 }
 
 func readInput(day, target string) []string {
