@@ -21,13 +21,13 @@ func main() {
 	}
 
 	day := "day02"
-	target := "sample"
+	target := "input"
 
 	puzzler := puzzlerByID[day]
 
 	input := readInput(day, target)
 
-	displayResult(day, "Part1", puzzler.Part1(input))
+	displayResult(day, "Part1", target, puzzler.Part1(input))
 	// displayResult(day, "Part2", puzzler.Part2(input))
 }
 
@@ -49,6 +49,6 @@ func readInput(day, target string) []string {
 	return lines
 }
 
-func displayResult(day string, part string, result string) {
-	fmt.Printf("%s/%s: %s\n", day, part, result)
+func displayResult(day, part, target, result string) {
+	fmt.Printf("%s/%s [%s]: %s\n", day, part, target, result)
 }
