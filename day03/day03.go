@@ -19,10 +19,13 @@ type Coordinate struct {
 }
 
 func (Puzzler) Part1(input []string) string {
-	candidates := findPartCandidates(input)
-	symbols := findSymbols(input)
-	fmt.Println(candidates)
-	fmt.Println(symbols)
+	_ = findPartCandidates(input)
+	_ = findSymbols(input)
+
+	// Taking a break. The plan going forward is as follows:
+	// * calculate valid, adjacent coordinates for each part candidate
+	// * for each adjacent coordinate, check against the map of symbols
+	// * if a symbol exists at an adjacent coordinate, the partID should be added to the sum
 	return "Part1 not yet implemented."
 }
 
@@ -86,4 +89,8 @@ func findSymbols(input []string) map[Coordinate]rune {
 	}
 
 	return symbols
+}
+
+func createAdjacentCoordinates(part Part) []Coordinate {
+	return []Coordinate{}
 }
