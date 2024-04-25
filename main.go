@@ -3,6 +3,7 @@ package main
 import (
 	"ac23/day01"
 	"ac23/day02"
+	"ac23/day03"
 	"bufio"
 	"fmt"
 	"log"
@@ -18,10 +19,11 @@ func main() {
 	puzzlerByID := map[string]Puzzler{
 		"day01": day01.Puzzler{},
 		"day02": day02.Puzzler{},
+		"day03": day03.Puzzler{},
 	}
 
-	day := "day02"
-	target := "input"
+	day := "day03"
+	target := "sample"
 
 	puzzler := puzzlerByID[day]
 
