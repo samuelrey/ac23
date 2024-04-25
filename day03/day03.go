@@ -20,7 +20,9 @@ type Coordinate struct {
 
 func (Puzzler) Part1(input []string) string {
 	candidates := findPartCandidates(input)
+	symbols := findSymbols(input)
 	fmt.Println(candidates)
+	fmt.Println(symbols)
 	return "Part1 not yet implemented."
 }
 
@@ -36,10 +38,10 @@ func findPartCandidates(input []string) map[string]Part {
 		partID := ""
 		partIndex := -1
 
-		for index, rune := range row {
+		for colIndex, rune := range row {
 			if unicode.IsDigit(rune) {
 				if isNewPart {
-					partIndex = index
+					partIndex = colIndex
 					partID = string(rune)
 					isNewPart = !isNewPart
 				} else {
@@ -63,4 +65,25 @@ func findPartCandidates(input []string) map[string]Part {
 	}
 
 	return candidates
+}
+
+func findSymbols(input []string) map[Coordinate]rune {
+	symbols := map[Coordinate]rune{}
+
+	for rowIndex, row := range input {
+		for colIndex, rune := range row {
+			if unicode.IsPunct(rune) || unicode.IsSymbol(rune) {
+				if rune != '.' {
+					newSymbol := Coordinate{rowIndex, colIndex}
+					_, exists := symbols[newSymbol]
+					if exists {
+						fmt.Printf("Symbol at coordinates already exists: %v.\n", newSymbol)
+					}
+					symbols[Coordinate{rowIndex, colIndex}] = rune
+				}
+			}
+		}
+	}
+
+	return symbols
 }
