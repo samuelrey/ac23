@@ -2,7 +2,6 @@ package day03
 
 import (
 	"fmt"
-	"strconv"
 	"unicode"
 )
 
@@ -94,49 +93,8 @@ func (s Schematic) sumPartNumbers() int {
 	sum := 0
 
 	for part := range s.parts {
-		sum = sum + idIfAdjacentSymbolExists(part, s.symbols, s.numRows, s.numCols)
+		sum = sum + part.idIfAdjacentSymbolExists(s.symbols, s.numRows, s.numCols)
 	}
 
 	return sum
-}
-
-func idIfAdjacentSymbolExists(part Part, symbols map[Coordinate]string, numRows int, numCols int) int {
-	partID, err := strconv.Atoi(part.ID)
-	if err != nil {
-		fmt.Println(err)
-		return -1
-	}
-
-	colAhead := part.Location.Col - 1
-	colBehind := part.Location.Col + len(part.ID)
-
-	if coordinate := createValidCoordinate(part.Location.Row, colAhead, numRows, numCols); coordinate != nil {
-		_, exists := symbols[*coordinate]
-		if exists {
-			return partID
-		}
-	}
-
-	if coordinate := createValidCoordinate(part.Location.Row, colBehind, numRows, numCols); coordinate != nil {
-		_, exists := symbols[*coordinate]
-		if exists {
-			return partID
-		}
-	}
-
-	rowAhead := part.Location.Row - 1
-	rowBehind := part.Location.Row + 1
-
-	for _, row := range []int{rowAhead, rowBehind} {
-		for col := colAhead; col <= colBehind; col++ {
-			if coordinate := createValidCoordinate(row, col, numRows, numCols); coordinate != nil {
-				_, exists := symbols[*coordinate]
-				if exists {
-					return partID
-				}
-			}
-		}
-	}
-
-	return 0
 }
