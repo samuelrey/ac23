@@ -51,7 +51,7 @@ func (Puzzler) Part2(input []string) string {
 	return "Part2 not yet implemented."
 }
 
-func (p *Schematic) findPartCandidates(input []string) map[Part]int {
+func (s *Schematic) findPartCandidates(input []string) map[Part]int {
 	candidates := map[Part]int{}
 
 	for rowIndex, row := range input {
@@ -93,11 +93,11 @@ func (p *Schematic) findPartCandidates(input []string) map[Part]int {
 		}
 	}
 
-	p.candidates = candidates
+	s.candidates = candidates
 	return candidates
 }
 
-func (p *Schematic) findSymbols(input []string) map[Coordinate]string {
+func (s *Schematic) findSymbols(input []string) map[Coordinate]string {
 	symbols := map[Coordinate]string{}
 
 	for rowIndex, row := range input {
@@ -113,11 +113,11 @@ func (p *Schematic) findSymbols(input []string) map[Coordinate]string {
 		}
 	}
 
-	p.symbols = symbols
+	s.symbols = symbols
 	return symbols
 }
 
-func (p *Schematic) findAdjacentSymbol(part Part) int {
+func (s *Schematic) findAdjacentSymbol(part Part) int {
 	partID, err := strconv.Atoi(part.ID)
 	if err != nil {
 		fmt.Println(err)
@@ -127,15 +127,15 @@ func (p *Schematic) findAdjacentSymbol(part Part) int {
 	colAhead := part.Location.Col - 1
 	colBehind := part.Location.Col + len(part.ID)
 
-	if coordinate := p.ensureIsValidCoordinate(part.Location.Row, colAhead); coordinate != nil {
-		_, exists := p.symbols[*coordinate]
+	if coordinate := s.ensureIsValidCoordinate(part.Location.Row, colAhead); coordinate != nil {
+		_, exists := s.symbols[*coordinate]
 		if exists {
 			return partID
 		}
 	}
 
-	if coordinate := p.ensureIsValidCoordinate(part.Location.Row, colBehind); coordinate != nil {
-		_, exists := p.symbols[*coordinate]
+	if coordinate := s.ensureIsValidCoordinate(part.Location.Row, colBehind); coordinate != nil {
+		_, exists := s.symbols[*coordinate]
 		if exists {
 			return partID
 		}
@@ -146,8 +146,8 @@ func (p *Schematic) findAdjacentSymbol(part Part) int {
 
 	for _, row := range []int{rowAhead, rowBehind} {
 		for col := colAhead; col <= colBehind; col++ {
-			if coordinate := p.ensureIsValidCoordinate(row, col); coordinate != nil {
-				_, exists := p.symbols[*coordinate]
+			if coordinate := s.ensureIsValidCoordinate(row, col); coordinate != nil {
+				_, exists := s.symbols[*coordinate]
 				if exists {
 					return partID
 				}
@@ -158,8 +158,8 @@ func (p *Schematic) findAdjacentSymbol(part Part) int {
 	return 0
 }
 
-func (p *Schematic) ensureIsValidCoordinate(row int, col int) *Coordinate {
-	if row >= 0 && row < p.numRows && col >= 0 && col < p.numCols {
+func (s *Schematic) ensureIsValidCoordinate(row int, col int) *Coordinate {
+	if row >= 0 && row < s.numRows && col >= 0 && col < s.numCols {
 		return &Coordinate{row, col}
 	}
 
