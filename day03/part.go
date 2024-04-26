@@ -1,7 +1,6 @@
 package day03
 
 import (
-	"fmt"
 	"strconv"
 )
 
@@ -11,11 +10,7 @@ type Part struct {
 }
 
 func (part Part) idIfAdjacentSymbolExists(symbols map[Coordinate]struct{}, numRows int, numCols int) int {
-	partID, err := strconv.Atoi(part.ID)
-	if err != nil {
-		fmt.Println(err)
-		return -1
-	}
+	partID, _ := strconv.Atoi(part.ID)
 
 	colAhead := part.Location.Col - 1
 	colBehind := part.Location.Col + len(part.ID)

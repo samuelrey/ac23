@@ -1,7 +1,6 @@
 package day03
 
 import (
-	"fmt"
 	"unicode"
 )
 
@@ -24,7 +23,7 @@ func SchematicFromInput(input []string) Schematic {
 }
 
 func findParts(input []string) map[Part]struct{} {
-	candidates := map[Part]struct{}{}
+	parts := map[Part]struct{}{}
 
 	for rowIndex, row := range input {
 		isNewPart := true
@@ -41,13 +40,10 @@ func findParts(input []string) map[Part]struct{} {
 					partID = partID + string(rune)
 				}
 			} else if len(partID) != 0 {
-				candidate := Part{partID, Coordinate{rowIndex, partIndex}}
-				_, exists := candidates[candidate]
-				if exists {
-					fmt.Printf("PartID already exists in set of candidates: %s.\n", partID)
-				}
+				coordinate := Coordinate{rowIndex, partIndex}
+				part := Part{partID, coordinate}
 
-				candidates[candidate] = struct{}{}
+				parts[part] = struct{}{}
 				partID = ""
 				partIndex = -1
 				isNewPart = !isNewPart
@@ -55,17 +51,14 @@ func findParts(input []string) map[Part]struct{} {
 		}
 
 		if len(partID) != 0 {
-			candidate := Part{partID, Coordinate{rowIndex, partIndex}}
-			_, exists := candidates[candidate]
-			if exists {
-				fmt.Printf("PartID already exists in set of candidates: %s.\n", partID)
-			}
+			coordinate := Coordinate{rowIndex, partIndex}
+			part := Part{partID, coordinate}
 
-			candidates[candidate] = struct{}{}
+			parts[part] = struct{}{}
 		}
 	}
 
-	return candidates
+	return parts
 }
 
 func findSymbols(input []string) map[Coordinate]struct{} {
@@ -74,12 +67,8 @@ func findSymbols(input []string) map[Coordinate]struct{} {
 	for rowIndex, row := range input {
 		for colIndex, rune := range row {
 			if !unicode.IsDigit(rune) && rune != '.' {
-				newSymbol := Coordinate{rowIndex, colIndex}
-				_, exists := symbols[newSymbol]
-				if exists {
-					fmt.Printf("Symbol at coordinates already exists: %v.\n", newSymbol)
-				}
-				symbols[Coordinate{rowIndex, colIndex}] = struct{}{}
+				coordinate := Coordinate{rowIndex, colIndex}
+				symbols[coordinate] = struct{}{}
 			}
 		}
 	}
