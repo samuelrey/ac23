@@ -94,13 +94,13 @@ func (s Schematic) sumPartNumbers() int {
 	sum := 0
 
 	for part := range s.parts {
-		sum = sum + s.findAdjacentSymbol(part)
+		sum = sum + idIfAdjacentSymbolExists(part, s.symbols, s.numRows, s.numCols)
 	}
 
 	return sum
 }
 
-func (s *Schematic) findAdjacentSymbol(part Part) int {
+func idIfAdjacentSymbolExists(part Part, symbols map[Coordinate]string, numRows int, numCols int) int {
 	partID, err := strconv.Atoi(part.ID)
 	if err != nil {
 		fmt.Println(err)
@@ -110,15 +110,15 @@ func (s *Schematic) findAdjacentSymbol(part Part) int {
 	colAhead := part.Location.Col - 1
 	colBehind := part.Location.Col + len(part.ID)
 
-	if coordinate := createValidCoordinate(part.Location.Row, colAhead, s.numRows, s.numCols); coordinate != nil {
-		_, exists := s.symbols[*coordinate]
+	if coordinate := createValidCoordinate(part.Location.Row, colAhead, numRows, numCols); coordinate != nil {
+		_, exists := symbols[*coordinate]
 		if exists {
 			return partID
 		}
 	}
 
-	if coordinate := createValidCoordinate(part.Location.Row, colBehind, s.numRows, s.numCols); coordinate != nil {
-		_, exists := s.symbols[*coordinate]
+	if coordinate := createValidCoordinate(part.Location.Row, colBehind, numRows, numCols); coordinate != nil {
+		_, exists := symbols[*coordinate]
 		if exists {
 			return partID
 		}
@@ -129,8 +129,8 @@ func (s *Schematic) findAdjacentSymbol(part Part) int {
 
 	for _, row := range []int{rowAhead, rowBehind} {
 		for col := colAhead; col <= colBehind; col++ {
-			if coordinate := createValidCoordinate(row, col, s.numRows, s.numCols); coordinate != nil {
-				_, exists := s.symbols[*coordinate]
+			if coordinate := createValidCoordinate(row, col, numRows, numCols); coordinate != nil {
+				_, exists := symbols[*coordinate]
 				if exists {
 					return partID
 				}
