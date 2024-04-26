@@ -42,8 +42,8 @@ func findParts(input []string) map[Part]struct{} {
 			} else if len(partID) != 0 {
 				coordinate := Coordinate{rowIndex, partIndex}
 				part := Part{partID, coordinate}
-
 				parts[part] = struct{}{}
+
 				partID = ""
 				partIndex = -1
 				isNewPart = !isNewPart
@@ -53,7 +53,6 @@ func findParts(input []string) map[Part]struct{} {
 		if len(partID) != 0 {
 			coordinate := Coordinate{rowIndex, partIndex}
 			part := Part{partID, coordinate}
-
 			parts[part] = struct{}{}
 		}
 	}
