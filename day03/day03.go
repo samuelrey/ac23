@@ -2,6 +2,7 @@ package day03
 
 import (
 	"fmt"
+	"strconv"
 	"unicode"
 )
 
@@ -23,21 +24,17 @@ type Coordinate struct {
 }
 
 func (p *Puzzler) Part1(input []string) string {
+	sum := 0
 	p.numRows = len(input)
 	p.numCols = len(input[0])
 	p.findPartCandidates(input)
 	p.findSymbols(input)
 
 	for _, part := range p.candidates {
-		adjacentCoordinates := p.findAdjacentCoordinates(part)
-		fmt.Println(adjacentCoordinates)
+		sum = sum + p.findAdjacentSymbol(part)
 	}
 
-	// Taking a break. The plan going forward is as follows:
-	// * calculate valid, adjacent coordinates for each part candidate
-	// * for each adjacent coordinate, check against the map of symbols
-	// * if a symbol exists at an adjacent coordinate, the partID should be added to the sum
-	return "Part1 not yet implemented."
+	return strconv.Itoa(sum)
 }
 
 func (Puzzler) Part2(input []string) string {
@@ -105,18 +102,28 @@ func (p *Puzzler) findSymbols(input []string) map[Coordinate]string {
 	return symbols
 }
 
-func (p *Puzzler) findAdjacentCoordinates(part Part) []Coordinate {
-	coordinates := []Coordinate{}
+func (p *Puzzler) findAdjacentSymbol(part Part) int {
+	partID, err := strconv.Atoi(part.ID)
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
 
 	colAhead := part.Location.Col - 1
 	colBehind := part.Location.Col + len(part.ID)
 
 	if coordinate := p.ensureIsValidCoordinate(part.Location.Row, colAhead); coordinate != nil {
-		coordinates = append(coordinates, *coordinate)
+		_, exists := p.symbols[*coordinate]
+		if exists {
+			return partID
+		}
 	}
 
 	if coordinate := p.ensureIsValidCoordinate(part.Location.Row, colBehind); coordinate != nil {
-		coordinates = append(coordinates, *coordinate)
+		_, exists := p.symbols[*coordinate]
+		if exists {
+			return partID
+		}
 	}
 
 	rowAhead := part.Location.Row - 1
@@ -125,12 +132,15 @@ func (p *Puzzler) findAdjacentCoordinates(part Part) []Coordinate {
 	for _, row := range []int{rowAhead, rowBehind} {
 		for col := colAhead; col <= colBehind; col++ {
 			if coordinate := p.ensureIsValidCoordinate(row, col); coordinate != nil {
-				coordinates = append(coordinates, *coordinate)
+				_, exists := p.symbols[*coordinate]
+				if exists {
+					return partID
+				}
 			}
 		}
 	}
 
-	return coordinates
+	return 0
 }
 
 func (p *Puzzler) ensureIsValidCoordinate(row int, col int) *Coordinate {

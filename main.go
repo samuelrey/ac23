@@ -23,7 +23,7 @@ func main() {
 	}
 
 	day := "day03"
-	target := "sample"
+	target := "input"
 
 	puzzler := puzzlerByID[day]
 
