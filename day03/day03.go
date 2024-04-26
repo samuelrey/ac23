@@ -72,6 +72,16 @@ func (p *Puzzler) findPartCandidates(input []string) map[Part]int {
 				isNewPart = !isNewPart
 			}
 		}
+
+		if len(partID) != 0 {
+			candidate := Part{partID, Coordinate{rowIndex, partIndex}}
+			_, exists := candidates[candidate]
+			if exists {
+				fmt.Printf("PartID already exists in set of candidates: %s.\n", partID)
+			}
+
+			candidates[candidate] = 0
+		}
 	}
 
 	p.candidates = candidates
@@ -83,7 +93,7 @@ func (p *Puzzler) findSymbols(input []string) map[Coordinate]string {
 
 	for rowIndex, row := range input {
 		for colIndex, rune := range row {
-			if unicode.IsPunct(rune) || unicode.IsSymbol(rune) {
+			if !unicode.IsDigit(rune) {
 				if rune != '.' {
 					newSymbol := Coordinate{rowIndex, colIndex}
 					_, exists := symbols[newSymbol]
