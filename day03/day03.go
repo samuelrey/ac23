@@ -6,7 +6,9 @@ import (
 	"unicode"
 )
 
-type Puzzler struct {
+type Puzzler struct{}
+
+type Schematic struct {
 	candidates map[Part]int
 	symbols    map[Coordinate]string
 	numRows    int
@@ -23,16 +25,23 @@ type Coordinate struct {
 	Col int
 }
 
-func (p *Puzzler) Part1(input []string) string { // correct answer: 517021
+func SchematicFromInput(input []string) Schematic {
+	schematic := Schematic{}
+
+	schematic.numRows = len(input)
+	schematic.numCols = len(input[0])
+	schematic.findPartCandidates(input)
+	schematic.findSymbols(input)
+
+	return schematic
+}
+
+func (p Puzzler) Part1(input []string) string {
+	schematic := SchematicFromInput(input)
 	sum := 0
 
-	p.numRows = len(input)
-	p.numCols = len(input[0])
-	p.findPartCandidates(input)
-	p.findSymbols(input)
-
-	for part := range p.candidates {
-		sum = sum + p.findAdjacentSymbol(part)
+	for part := range schematic.candidates {
+		sum = sum + schematic.findAdjacentSymbol(part)
 	}
 
 	return strconv.Itoa(sum)
@@ -42,7 +51,7 @@ func (Puzzler) Part2(input []string) string {
 	return "Part2 not yet implemented."
 }
 
-func (p *Puzzler) findPartCandidates(input []string) map[Part]int {
+func (p *Schematic) findPartCandidates(input []string) map[Part]int {
 	candidates := map[Part]int{}
 
 	for rowIndex, row := range input {
@@ -88,20 +97,18 @@ func (p *Puzzler) findPartCandidates(input []string) map[Part]int {
 	return candidates
 }
 
-func (p *Puzzler) findSymbols(input []string) map[Coordinate]string {
+func (p *Schematic) findSymbols(input []string) map[Coordinate]string {
 	symbols := map[Coordinate]string{}
 
 	for rowIndex, row := range input {
 		for colIndex, rune := range row {
-			if !unicode.IsDigit(rune) {
-				if rune != '.' {
-					newSymbol := Coordinate{rowIndex, colIndex}
-					_, exists := symbols[newSymbol]
-					if exists {
-						fmt.Printf("Symbol at coordinates already exists: %v.\n", newSymbol)
-					}
-					symbols[Coordinate{rowIndex, colIndex}] = string(rune)
+			if !unicode.IsDigit(rune) && rune != '.' {
+				newSymbol := Coordinate{rowIndex, colIndex}
+				_, exists := symbols[newSymbol]
+				if exists {
+					fmt.Printf("Symbol at coordinates already exists: %v.\n", newSymbol)
 				}
+				symbols[Coordinate{rowIndex, colIndex}] = string(rune)
 			}
 		}
 	}
@@ -110,7 +117,7 @@ func (p *Puzzler) findSymbols(input []string) map[Coordinate]string {
 	return symbols
 }
 
-func (p *Puzzler) findAdjacentSymbol(part Part) int {
+func (p *Schematic) findAdjacentSymbol(part Part) int {
 	partID, err := strconv.Atoi(part.ID)
 	if err != nil {
 		fmt.Println(err)
@@ -151,7 +158,7 @@ func (p *Puzzler) findAdjacentSymbol(part Part) int {
 	return 0
 }
 
-func (p *Puzzler) ensureIsValidCoordinate(row int, col int) *Coordinate {
+func (p *Schematic) ensureIsValidCoordinate(row int, col int) *Coordinate {
 	if row >= 0 && row < p.numRows && col >= 0 && col < p.numCols {
 		return &Coordinate{row, col}
 	}

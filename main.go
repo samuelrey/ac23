@@ -19,7 +19,7 @@ func main() {
 	puzzlerByID := map[string]Puzzler{
 		"day01": day01.Puzzler{},
 		"day02": day02.Puzzler{},
-		"day03": &day03.Puzzler{},
+		"day03": day03.Puzzler{},
 	}
 
 	day := "day03"
