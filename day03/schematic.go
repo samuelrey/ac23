@@ -6,7 +6,7 @@ import (
 )
 
 type Schematic struct {
-	parts   map[Part]int
+	parts   map[Part]struct{}
 	symbols map[Coordinate]struct{}
 	numRows int
 	numCols int
@@ -17,14 +17,14 @@ func SchematicFromInput(input []string) Schematic {
 
 	schematic.numRows = len(input)
 	schematic.numCols = len(input[0])
-	schematic.findParts(input)
+	schematic.parts = findParts(input)
 	schematic.symbols = findSymbols(input)
 
 	return schematic
 }
 
-func (s *Schematic) findParts(input []string) map[Part]int {
-	candidates := map[Part]int{}
+func findParts(input []string) map[Part]struct{} {
+	candidates := map[Part]struct{}{}
 
 	for rowIndex, row := range input {
 		isNewPart := true
@@ -47,7 +47,7 @@ func (s *Schematic) findParts(input []string) map[Part]int {
 					fmt.Printf("PartID already exists in set of candidates: %s.\n", partID)
 				}
 
-				candidates[candidate] = 0
+				candidates[candidate] = struct{}{}
 				partID = ""
 				partIndex = -1
 				isNewPart = !isNewPart
@@ -61,11 +61,10 @@ func (s *Schematic) findParts(input []string) map[Part]int {
 				fmt.Printf("PartID already exists in set of candidates: %s.\n", partID)
 			}
 
-			candidates[candidate] = 0
+			candidates[candidate] = struct{}{}
 		}
 	}
 
-	s.parts = candidates
 	return candidates
 }
 
