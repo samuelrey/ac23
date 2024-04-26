@@ -10,7 +10,7 @@ type Part struct {
 	Location Coordinate
 }
 
-func (part Part) idIfAdjacentSymbolExists(symbols map[Coordinate]string, numRows int, numCols int) int {
+func (part Part) idIfAdjacentSymbolExists(symbols map[Coordinate]struct{}, numRows int, numCols int) int {
 	partID, err := strconv.Atoi(part.ID)
 	if err != nil {
 		fmt.Println(err)

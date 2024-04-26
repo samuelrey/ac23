@@ -7,7 +7,7 @@ import (
 
 type Schematic struct {
 	parts   map[Part]int
-	symbols map[Coordinate]string
+	symbols map[Coordinate]struct{}
 	numRows int
 	numCols int
 }
@@ -18,7 +18,7 @@ func SchematicFromInput(input []string) Schematic {
 	schematic.numRows = len(input)
 	schematic.numCols = len(input[0])
 	schematic.findParts(input)
-	schematic.findSymbols(input)
+	schematic.symbols = findSymbols(input)
 
 	return schematic
 }
@@ -69,8 +69,8 @@ func (s *Schematic) findParts(input []string) map[Part]int {
 	return candidates
 }
 
-func (s *Schematic) findSymbols(input []string) map[Coordinate]string {
-	symbols := map[Coordinate]string{}
+func findSymbols(input []string) map[Coordinate]struct{} {
+	symbols := map[Coordinate]struct{}{}
 
 	for rowIndex, row := range input {
 		for colIndex, rune := range row {
@@ -80,12 +80,11 @@ func (s *Schematic) findSymbols(input []string) map[Coordinate]string {
 				if exists {
 					fmt.Printf("Symbol at coordinates already exists: %v.\n", newSymbol)
 				}
-				symbols[Coordinate{rowIndex, colIndex}] = string(rune)
+				symbols[Coordinate{rowIndex, colIndex}] = struct{}{}
 			}
 		}
 	}
 
-	s.symbols = symbols
 	return symbols
 }
 
