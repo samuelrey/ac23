@@ -8,12 +8,7 @@ type Puzzler struct{}
 
 func (p Puzzler) Part1(input []string) string {
 	schematic := SchematicFromInput(input)
-	sum := 0
-
-	for part := range schematic.parts {
-		sum = sum + schematic.findAdjacentSymbol(part)
-	}
-
+	sum := schematic.sumPartNumbers()
 	return strconv.Itoa(sum)
 }
 

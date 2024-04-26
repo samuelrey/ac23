@@ -18,13 +18,13 @@ func SchematicFromInput(input []string) Schematic {
 
 	schematic.numRows = len(input)
 	schematic.numCols = len(input[0])
-	schematic.findPartCandidates(input)
+	schematic.findParts(input)
 	schematic.findSymbols(input)
 
 	return schematic
 }
 
-func (s *Schematic) findPartCandidates(input []string) map[Part]int {
+func (s *Schematic) findParts(input []string) map[Part]int {
 	candidates := map[Part]int{}
 
 	for rowIndex, row := range input {
@@ -90,6 +90,16 @@ func (s *Schematic) findSymbols(input []string) map[Coordinate]string {
 	return symbols
 }
 
+func (s Schematic) sumPartNumbers() int {
+	sum := 0
+
+	for part := range s.parts {
+		sum = sum + s.findAdjacentSymbol(part)
+	}
+
+	return sum
+}
+
 func (s *Schematic) findAdjacentSymbol(part Part) int {
 	partID, err := strconv.Atoi(part.ID)
 	if err != nil {
@@ -100,14 +110,14 @@ func (s *Schematic) findAdjacentSymbol(part Part) int {
 	colAhead := part.Location.Col - 1
 	colBehind := part.Location.Col + len(part.ID)
 
-	if coordinate := s.ensureIsValidCoordinate(part.Location.Row, colAhead); coordinate != nil {
+	if coordinate := createValidCoordinate(part.Location.Row, colAhead, s.numRows, s.numCols); coordinate != nil {
 		_, exists := s.symbols[*coordinate]
 		if exists {
 			return partID
 		}
 	}
 
-	if coordinate := s.ensureIsValidCoordinate(part.Location.Row, colBehind); coordinate != nil {
+	if coordinate := createValidCoordinate(part.Location.Row, colBehind, s.numRows, s.numCols); coordinate != nil {
 		_, exists := s.symbols[*coordinate]
 		if exists {
 			return partID
@@ -119,7 +129,7 @@ func (s *Schematic) findAdjacentSymbol(part Part) int {
 
 	for _, row := range []int{rowAhead, rowBehind} {
 		for col := colAhead; col <= colBehind; col++ {
-			if coordinate := s.ensureIsValidCoordinate(row, col); coordinate != nil {
+			if coordinate := createValidCoordinate(row, col, s.numRows, s.numCols); coordinate != nil {
 				_, exists := s.symbols[*coordinate]
 				if exists {
 					return partID
@@ -129,12 +139,4 @@ func (s *Schematic) findAdjacentSymbol(part Part) int {
 	}
 
 	return 0
-}
-
-func (s *Schematic) ensureIsValidCoordinate(row int, col int) *Coordinate {
-	if row >= 0 && row < s.numRows && col >= 0 && col < s.numCols {
-		return &Coordinate{row, col}
-	}
-
-	return nil
 }
