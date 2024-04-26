@@ -6,6 +6,10 @@ import (
 )
 
 type Puzzler struct {
+	candidates map[string]Part
+	symbols    map[Coordinate]string
+	numRows    int
+	numCols    int
 }
 
 type Part struct {
@@ -18,9 +22,16 @@ type Coordinate struct {
 	Col int
 }
 
-func (Puzzler) Part1(input []string) string {
-	_ = findPartCandidates(input)
-	_ = findSymbols(input)
+func (p *Puzzler) Part1(input []string) string {
+	p.numRows = len(input)
+	p.numCols = len(input[0])
+	p.findPartCandidates(input)
+	p.findSymbols(input)
+
+	for _, part := range p.candidates {
+		adjacentCoordinates := p.findAdjacentCoordinates(part)
+		fmt.Println(adjacentCoordinates)
+	}
 
 	// Taking a break. The plan going forward is as follows:
 	// * calculate valid, adjacent coordinates for each part candidate
@@ -33,7 +44,7 @@ func (Puzzler) Part2(input []string) string {
 	return "Part2 not yet implemented."
 }
 
-func findPartCandidates(input []string) map[string]Part {
+func (p *Puzzler) findPartCandidates(input []string) map[string]Part {
 	candidates := map[string]Part{}
 
 	for rowIndex, row := range input {
@@ -63,15 +74,17 @@ func findPartCandidates(input []string) map[string]Part {
 
 				partID = ""
 				partIndex = -1
+				isNewPart = !isNewPart
 			}
 		}
 	}
 
+	p.candidates = candidates
 	return candidates
 }
 
-func findSymbols(input []string) map[Coordinate]rune {
-	symbols := map[Coordinate]rune{}
+func (p *Puzzler) findSymbols(input []string) map[Coordinate]string {
+	symbols := map[Coordinate]string{}
 
 	for rowIndex, row := range input {
 		for colIndex, rune := range row {
@@ -82,15 +95,48 @@ func findSymbols(input []string) map[Coordinate]rune {
 					if exists {
 						fmt.Printf("Symbol at coordinates already exists: %v.\n", newSymbol)
 					}
-					symbols[Coordinate{rowIndex, colIndex}] = rune
+					symbols[Coordinate{rowIndex, colIndex}] = string(rune)
 				}
 			}
 		}
 	}
 
+	p.symbols = symbols
 	return symbols
 }
 
-func createAdjacentCoordinates(part Part) []Coordinate {
-	return []Coordinate{}
+func (p *Puzzler) findAdjacentCoordinates(part Part) []Coordinate {
+	coordinates := []Coordinate{}
+
+	colAhead := part.Location.Col - 1
+	colBehind := part.Location.Col + len(part.ID)
+
+	if coordinate := p.ensureIsValidCoordinate(part.Location.Row, colAhead); coordinate != nil {
+		coordinates = append(coordinates, *coordinate)
+	}
+
+	if coordinate := p.ensureIsValidCoordinate(part.Location.Row, colBehind); coordinate != nil {
+		coordinates = append(coordinates, *coordinate)
+	}
+
+	rowAhead := part.Location.Row - 1
+	rowBehind := part.Location.Row + 1
+
+	for _, row := range []int{rowAhead, rowBehind} {
+		for col := colAhead; col <= colBehind; col++ {
+			if coordinate := p.ensureIsValidCoordinate(row, col); coordinate != nil {
+				coordinates = append(coordinates, *coordinate)
+			}
+		}
+	}
+
+	return coordinates
+}
+
+func (p *Puzzler) ensureIsValidCoordinate(row int, col int) *Coordinate {
+	if row >= 0 && row < p.numRows && col >= 0 && col < p.numCols {
+		return &Coordinate{row, col}
+	}
+
+	return nil
 }
