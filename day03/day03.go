@@ -7,7 +7,7 @@ import (
 )
 
 type Puzzler struct {
-	candidates map[string]Part
+	candidates map[Part]int
 	symbols    map[Coordinate]string
 	numRows    int
 	numCols    int
@@ -23,14 +23,15 @@ type Coordinate struct {
 	Col int
 }
 
-func (p *Puzzler) Part1(input []string) string {
+func (p *Puzzler) Part1(input []string) string { // correct answer: 517021
 	sum := 0
+
 	p.numRows = len(input)
 	p.numCols = len(input[0])
 	p.findPartCandidates(input)
 	p.findSymbols(input)
 
-	for _, part := range p.candidates {
+	for part := range p.candidates {
 		sum = sum + p.findAdjacentSymbol(part)
 	}
 
@@ -41,8 +42,8 @@ func (Puzzler) Part2(input []string) string {
 	return "Part2 not yet implemented."
 }
 
-func (p *Puzzler) findPartCandidates(input []string) map[string]Part {
-	candidates := map[string]Part{}
+func (p *Puzzler) findPartCandidates(input []string) map[Part]int {
+	candidates := map[Part]int{}
 
 	for rowIndex, row := range input {
 		isNewPart := true
@@ -59,16 +60,13 @@ func (p *Puzzler) findPartCandidates(input []string) map[string]Part {
 					partID = partID + string(rune)
 				}
 			} else if len(partID) != 0 {
-				_, exists := candidates[partID]
+				candidate := Part{partID, Coordinate{rowIndex, partIndex}}
+				_, exists := candidates[candidate]
 				if exists {
 					fmt.Printf("PartID already exists in set of candidates: %s.\n", partID)
 				}
 
-				candidates[partID] = Part{
-					partID,
-					Coordinate{rowIndex, partIndex},
-				}
-
+				candidates[candidate] = 0
 				partID = ""
 				partIndex = -1
 				isNewPart = !isNewPart
