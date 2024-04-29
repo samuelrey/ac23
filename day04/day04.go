@@ -2,6 +2,7 @@ package day04
 
 import (
 	"fmt"
+	"math"
 	"strings"
 )
 
@@ -44,17 +45,23 @@ func sumPoints(pulls []Card, winners []Card) int {
 	points := 0
 	for i := range pulls {
 		matches := countMatches(pulls[i], winners[i])
-		if matches > 0 {
-			points = points + 2 ^ (matches - 1)
-		}
+		points = points + calculatePointsForMatches(matches)
 	}
 	return points
 }
 
-func countMatches(pulls Card, winners Card) int {
+func calculatePointsForMatches(matches int) int {
+	if matches == 0 {
+		return 0
+	}
+
+	return int(math.Pow(float64(2), float64(matches-1)))
+}
+
+func countMatches(pull Card, winner Card) int {
 	sum := 0
-	for number := range pulls {
-		_, match := winners[number]
+	for number := range pull {
+		_, match := winner[number]
 		if match {
 			sum = sum + 1
 		}
