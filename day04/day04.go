@@ -3,6 +3,7 @@ package day04
 import (
 	"fmt"
 	"math"
+	"strconv"
 	"strings"
 )
 
@@ -12,15 +13,18 @@ type Puzzler struct {
 type Card map[string]struct{}
 
 func (Puzzler) Part1(input []string) string {
-	i := "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53"
-	splitByID := strings.Split(i, ":")
-	splitPullAndWinner := strings.Split(splitByID[1], "|")
+	sum := 0
 
-	pull := buildCard(splitPullAndWinner[0])
-	winner := buildCard(splitPullAndWinner[1])
-	sum := sumPoints([]Card{pull}, []Card{winner})
-	fmt.Println(sum)
-	return splitPullAndWinner[0]
+	for _, row := range input {
+		splitByID := strings.Split(row, ":")
+		splitPullAndWinner := strings.Split(splitByID[1], "|")
+
+		pull := buildCard(splitPullAndWinner[0])
+		winner := buildCard(splitPullAndWinner[1])
+		sum = sum + sumPoints([]Card{pull}, []Card{winner})
+	}
+
+	return strconv.Itoa(sum)
 }
 
 func (Puzzler) Part2(input []string) string {
