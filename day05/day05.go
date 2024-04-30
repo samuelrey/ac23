@@ -1,7 +1,6 @@
 package day05
 
 import (
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -23,27 +22,60 @@ func (rangeList RangeList) sortBySource(i, j int) bool {
 }
 
 func (Puzzler) Part1(input []string) string {
-	input = []string{"50 98 2", "52 50 48"}
-	rangeList := RangeList{}
-	for _, i := range input {
-		rangeList = append(rangeList, buildRange(i))
+	seeds, allRangeLists := parseSeedsAndAllRangeLists(input)
+
+	for _, rangeList := range allRangeLists {
+		destinations := []int{}
+		for _, s := range seeds {
+			destinations = append(destinations, calculateDestination(s, rangeList))
+		}
+		seeds = destinations
 	}
 
-	sort.Slice(rangeList, rangeList.sortBySource)
-
-	seeds := []int{79, 14, 55, 13}
-	destinations := []int{}
-	for _, s := range seeds {
-		destinations = append(destinations, calculateDestination(s, rangeList))
-	}
-	fmt.Println(seeds)
-	fmt.Println(destinations)
-
-	return "Part1 not yet implemented."
+	sort.Ints(seeds)
+	lowest := seeds[0]
+	return strconv.Itoa(lowest)
 }
 
 func (Puzzler) Part2(input []string) string {
 	return "Part2 not yet implemented."
+}
+
+func parseSeedsAndAllRangeLists(input []string) ([]int, []RangeList) {
+	seeds := parseSeeds(input[0])
+
+	allRangeLists := []RangeList{}
+	tmp := RangeList{}
+
+	for _, line := range input[2:] {
+		if strings.Contains(line, ":") {
+			continue
+		}
+
+		if len(line) == 0 {
+			sort.Slice(tmp, tmp.sortBySource)
+			allRangeLists = append(allRangeLists, tmp)
+			tmp = RangeList{}
+		} else {
+			tmp = append(tmp, buildRange(line))
+		}
+	}
+
+	sort.Slice(tmp, tmp.sortBySource)
+	allRangeLists = append(allRangeLists, tmp)
+
+	return seeds, allRangeLists
+}
+
+func parseSeeds(line string) []int {
+	seeds := []int{}
+	splitByHeader := strings.Split(line, ":")
+	fields := strings.Fields(splitByHeader[1])
+	for _, f := range fields {
+		seed, _ := strconv.Atoi(f)
+		seeds = append(seeds, seed)
+	}
+	return seeds
 }
 
 func buildRange(line string) Range {
