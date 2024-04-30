@@ -33,21 +33,8 @@ func (Puzzler) Part1(input []string) string {
 
 	seeds := []int{79, 14, 55, 13}
 	destinations := []int{}
-	for i, s := range seeds {
-		for _, rnge := range rangeList {
-			if s < rnge.source {
-				destinations = append(destinations, s)
-				break
-			}
-
-			if s >= rnge.source && s <= rnge.source+rnge.length-1 {
-				destinations = append(destinations, s+rnge.distance)
-				break
-			}
-		}
-		if len(destinations) < i+1 {
-			destinations = append(destinations, s)
-		}
+	for _, s := range seeds {
+		destinations = append(destinations, calculateDestination(s, rangeList))
 	}
 	fmt.Println(seeds)
 	fmt.Println(destinations)
@@ -73,4 +60,18 @@ func buildRange(line string) Range {
 		distance: numbers[0] - numbers[1],
 		length:   numbers[2],
 	}
+}
+
+func calculateDestination(seed int, rangeList RangeList) int {
+	for _, rnge := range rangeList {
+		if seed < rnge.source {
+			return seed
+		}
+
+		if seed >= rnge.source && seed <= rnge.source+rnge.length-1 {
+			return seed + rnge.distance
+		}
+	}
+
+	return seed
 }
