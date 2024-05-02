@@ -26,9 +26,10 @@ func main() {
 		"day04": day04.Puzzler{},
 		"day05": day05.Puzzler{},
 		"day06": day06.Puzzler{},
+		"day07": day06.Puzzler{},
 	}
 
-	day := "day06"
+	day := "day07"
 	target := "sample"
 
 	puzzler := puzzlerByID[day]
