@@ -9,17 +9,31 @@ import (
 type Puzzler struct {
 }
 
-type HandValue []int
+type Hand struct {
+	cards      string
+	cardValues []int
+	handValue  int
+	bid        int
+}
 
-type HandValues []HandValue
+type HandSlice []Hand
 
 func (Puzzler) Part1(input []string) string {
-	hands := []string{"32T3K", "T55J5", "KK677", "KTJJT", "QQQJA"}
-	handValues := make(HandValues, len(hands))
-	for i, hand := range hands {
-		handValues[i] = parseCardValues(hand)
+	// todo: parse from input
+	cards := []string{"32T3K", "T55J5", "KK677", "KTJJT", "QQQJA"}
+	bids := []int{765, 684, 28, 220, 483}
+
+	hands := make(HandSlice, len(cards))
+	for i, c := range cards {
+		hands[i] = createHand(c, bids[i])
 	}
-	sort.Slice(handValues, handValues.sortHandsByValue)
+
+	sort.Slice(hands, hands.sortHandsByValue)
+
+	sum := 0
+	for i, hand := range hands {
+		sum = sum + (i+1)*hand.bid
+	}
 	return "Part1 not yet implemented."
 }
 
@@ -27,10 +41,16 @@ func (Puzzler) Part2(input []string) string {
 	return "Part2 not yet implemented."
 }
 
-func parseCardValues(hand string) HandValue {
-	cardValues := make([]int, len(hand))
+func createHand(cards string, bid int) Hand {
+	cardValues := parseCardValues(cards)
+	handValue := calculateHandValue(cardValues)
+	return Hand{cards, cardValues, handValue, bid}
+}
 
-	for i, card := range hand {
+func parseCardValues(cards string) []int {
+	cardValues := make([]int, len(cards))
+
+	for i, card := range cards {
 		if unicode.IsDigit(card) {
 			cardValue, _ := strconv.Atoi(string(card))
 			cardValues[i] = cardValue
@@ -53,9 +73,9 @@ func parseCardValues(hand string) HandValue {
 	return cardValues
 }
 
-func calculateHandValue(hand []int) int {
+func calculateHandValue(cardValues []int) int {
 	matches := map[int]int{}
-	for _, card := range hand {
+	for _, card := range cardValues {
 		count, exists := matches[card]
 		if !exists {
 			matches[card] = 1
@@ -104,18 +124,20 @@ func calculateHandValue(hand []int) int {
 	return -1
 }
 
-func (h HandValues) sortHandsByValue(i, j int) bool {
+func (h HandSlice) sortHandsByValue(i, j int) bool {
 	left, right := h[i], h[j]
-	leftValue, rightValue := calculateHandValue(left), calculateHandValue(right)
-	if leftValue == rightValue {
-		for i := range left {
-			if left[i] != right[i] {
-				return left[i] < right[i]
+	leftHV, rightHV := left.handValue, right.handValue
+
+	if leftHV == rightHV {
+		leftCV, rightCV := left.cardValues, right.cardValues
+		for i := range leftCV {
+			if leftCV[i] != rightCV[i] {
+				return leftCV[i] < rightCV[i]
 			}
 		}
 	}
 
-	return leftValue < rightValue
+	return leftHV < rightHV
 }
 
 /*
