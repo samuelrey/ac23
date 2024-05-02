@@ -16,7 +16,7 @@ func (Puzzler) Part2(input []string) string {
 	return "Part2 not yet implemented."
 }
 
-func parseHand(hand string) []int {
+func parseCardValues(hand string) []int {
 	cardValues := make([]int, len(hand))
 
 	for i, card := range hand {
@@ -40,6 +40,57 @@ func parseHand(hand string) []int {
 	}
 
 	return cardValues
+}
+
+func calculateHandValue(hand []int) int {
+	matches := map[int]int{}
+	for _, card := range hand {
+		count, exists := matches[card]
+		if !exists {
+			matches[card] = 1
+		} else {
+			matches[card] = count + 1
+		}
+	}
+
+	// exit early if all cards are unique, ie High Card
+	if len(matches) == 5 {
+		return 0
+	}
+
+	// filter out single cards since they have no effect on hand value
+	for card, count := range matches {
+		if count == 1 {
+			delete(matches, card)
+		}
+	}
+
+	// either a Full-House or 2 Pairs
+	if len(matches) == 2 {
+		for _, count := range matches {
+			if count == 3 {
+				return 4
+			}
+		}
+
+		return 2
+	}
+
+	// consider that Full-House > Three-of-a-Kind, 2 Pairs > Pair
+	for _, count := range matches {
+		switch count {
+		case 5:
+			return 6
+		case 4:
+			return 5
+		case 3:
+			return 3
+		case 2:
+			return 1
+		}
+	}
+
+	return -1
 }
 
 /*
