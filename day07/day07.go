@@ -1,6 +1,7 @@
 package day07
 
 import (
+	"sort"
 	"strconv"
 	"unicode"
 )
@@ -8,7 +9,17 @@ import (
 type Puzzler struct {
 }
 
+type HandValue []int
+
+type HandValues []HandValue
+
 func (Puzzler) Part1(input []string) string {
+	hands := []string{"32T3K", "T55J5", "KK677", "KTJJT", "QQQJA"}
+	handValues := make(HandValues, len(hands))
+	for i, hand := range hands {
+		handValues[i] = parseCardValues(hand)
+	}
+	sort.Slice(handValues, handValues.sortHandsByValue)
 	return "Part1 not yet implemented."
 }
 
@@ -16,7 +27,7 @@ func (Puzzler) Part2(input []string) string {
 	return "Part2 not yet implemented."
 }
 
-func parseCardValues(hand string) []int {
+func parseCardValues(hand string) HandValue {
 	cardValues := make([]int, len(hand))
 
 	for i, card := range hand {
@@ -91,6 +102,20 @@ func calculateHandValue(hand []int) int {
 	}
 
 	return -1
+}
+
+func (h HandValues) sortHandsByValue(i, j int) bool {
+	left, right := h[i], h[j]
+	leftValue, rightValue := calculateHandValue(left), calculateHandValue(right)
+	if leftValue == rightValue {
+		for i := range left {
+			if left[i] != right[i] {
+				return left[i] < right[i]
+			}
+		}
+	}
+
+	return leftValue < rightValue
 }
 
 /*
