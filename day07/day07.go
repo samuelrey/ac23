@@ -3,6 +3,7 @@ package day07
 import (
 	"sort"
 	"strconv"
+	"strings"
 	"unicode"
 )
 
@@ -19,13 +20,12 @@ type Hand struct {
 type HandSlice []Hand
 
 func (Puzzler) Part1(input []string) string {
-	// todo: parse from input
-	cards := []string{"32T3K", "T55J5", "KK677", "KTJJT", "QQQJA"}
-	bids := []int{765, 684, 28, 220, 483}
-
-	hands := make(HandSlice, len(cards))
-	for i, c := range cards {
-		hands[i] = createHand(c, bids[i])
+	hands := HandSlice{}
+	for _, i := range input {
+		f := strings.Fields(i)
+		cards := f[0]
+		bid, _ := strconv.Atoi(f[1])
+		hands = append(hands, createHand(cards, bid))
 	}
 
 	sort.Slice(hands, hands.sortHandsByValue)
@@ -34,7 +34,8 @@ func (Puzzler) Part1(input []string) string {
 	for i, hand := range hands {
 		sum = sum + (i+1)*hand.bid
 	}
-	return "Part1 not yet implemented."
+
+	return strconv.Itoa(sum)
 }
 
 func (Puzzler) Part2(input []string) string {
