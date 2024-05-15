@@ -1,6 +1,7 @@
 package day08
 
 import (
+	"fmt"
 	"regexp"
 )
 
@@ -23,8 +24,33 @@ func createDirection(s string) Direction {
 	}
 }
 
+func traverse(directionByKey map[string]Direction, pattern string) int {
+	count := 0
+	step := 0
+	currentPosition := "AAA"
+
+	for currentPosition != "ZZZ" {
+		d := directionByKey[currentPosition]
+		r := pattern[step]
+
+		switch r {
+		case 'R':
+			currentPosition = d.right
+		case 'L':
+			currentPosition = d.left
+		default:
+			panic(1)
+		}
+
+		count++
+		step = (step + 1) % len(pattern)
+	}
+
+	return count
+}
+
 func (Puzzler) Part1(input []string) string {
-	traversalPattern := input[0]
+	pattern := input[0]
 
 	directionByKey := map[string]Direction{}
 	for i := 2; i < len(input); i++ {
@@ -32,7 +58,8 @@ func (Puzzler) Part1(input []string) string {
 		directionByKey[d.key] = d
 	}
 
-	currentPosition := "AAA"
+	x := traverse(directionByKey, pattern)
+	fmt.Println(x)
 	return "Part1 not yet implemented."
 }
 
