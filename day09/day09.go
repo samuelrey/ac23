@@ -1,13 +1,30 @@
 package day09
 
-import "fmt"
+import (
+	"strconv"
+	"strings"
+)
 
 type Puzzler struct {
 }
 
 func (Puzzler) Part1(input []string) string {
-	x := foo([]int{1, 3, 6, 10, 15, 21})
-	fmt.Println(x)
+	numbers := make([][]int, len(input))
+	for i, line := range input {
+		fields := strings.Fields(line)
+		asNum := make([]int, len(fields))
+		for j, f := range fields {
+			n, _ := strconv.Atoi(f)
+			asNum[j] = n
+		}
+		numbers[i] = asNum
+	}
+
+	total := 0
+	for _, nums := range numbers {
+		total = total + foo(nums)
+	}
+
 	return "Part1 not yet implemented."
 }
 
