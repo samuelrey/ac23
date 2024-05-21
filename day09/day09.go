@@ -25,7 +25,7 @@ func (Puzzler) Part1(input []string) string {
 		total = total + foo(nums)
 	}
 
-	return "Part1 not yet implemented."
+	return strconv.Itoa(total)
 }
 
 func (Puzzler) Part2(input []string) string {
