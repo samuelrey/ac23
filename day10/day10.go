@@ -58,9 +58,62 @@ func findPipes(input []string) map[Position]Pipe {
 func (Puzzler) Part1(input []string) string {
 	start := findStart(input)
 	pipes := findPipes(input)
-	fmt.Println(start)
-	fmt.Println(pipes)
+
+	possiblePositions := []Position{
+		{start.row - 1, start.col},
+		{start.row + 1, start.col},
+		{start.row, start.col - 1},
+		{start.row, start.col + 1},
+	}
+	actualPositions := map[Position]Pipe{}
+	for _, position := range possiblePositions {
+		if _, exists := pipes[position]; exists {
+			actualPositions[position] = pipes[position]
+		}
+	}
+
+	stepByPositon := map[Position]int{}
+	for position, pipe := range actualPositions {
+
+	}
 	return "Part1 not yet implemented."
+}
+
+func step(current Position, pipe Pipe, fromDirection string, pipeByPosition map[Position]Pipe) (Pipe, Position, string) {
+	var stepDir, nextFrom string
+	row, col := current.row, current.col
+
+	if pipe.dir1 == fromDirection {
+		stepDir = pipe.dir2
+	} else {
+		stepDir = pipe.dir1
+	}
+
+	switch stepDir {
+	case "N":
+		row--
+		nextFrom = "S"
+	case "S":
+		row++
+		nextFrom = "N"
+	case "W":
+		col--
+		nextFrom = "E"
+	case "E":
+		col++
+		nextFrom = "W"
+	default:
+		fmt.Println("d'oh")
+	}
+
+	nextPosition := Position{row, col}
+
+	nextPipe, exists := pipeByPosition[nextPosition]
+	if !exists {
+		fmt.Println("uh oh")
+	}
+
+	return nextPipe, nextPosition, nextFrom
 }
 
 func (Puzzler) Part2(input []string) string {
