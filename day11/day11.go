@@ -53,20 +53,31 @@ func expandSpace(space []string) []string {
 	return expanded
 }
 
+type galaxy struct {
+	x int
+	y int
+}
+
 func (Puzzler) Part1(space []string) string {
 	space = expandSpace(space)
 	space = transposeSpace(space)
 	space = expandSpace(space)
 	space = transposeSpace(space)
 
-	galaxies := [][]int{}
-	for x, sector := range space {
+	galaxies := []galaxy{}
+	for y, sector := range space {
 		matches := findAllGalaxy(sector)
-		for _, y := range matches {
-			galaxies = append(galaxies, []int{x, y})
+		for _, x := range matches {
+			galaxies = append(galaxies, galaxy{x, y})
 		}
 	}
 
+	galaxyPairs := [][]galaxy{}
+	for i := 0; i < len(galaxies); i++ {
+		for j := i+1; j < len(galaxies); j++ {
+			galaxyPairs = append(galaxyPairs, []galaxy{galaxies[i], galaxies[j]})
+		}
+	}
 	return "Part1 not yet implemented."
 }
 
