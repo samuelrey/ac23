@@ -78,7 +78,22 @@ func (Puzzler) Part1(space []string) string {
 			galaxyPairs = append(galaxyPairs, []galaxy{galaxies[i], galaxies[j]})
 		}
 	}
+
+	sum := 0
+	for _, pair := range galaxyPairs {
+		sum += diff(pair[0].x, pair[1].x)
+		sum += diff(pair[0].y, pair[1].y)
+	}
+
 	return "Part1 not yet implemented."
+}
+
+func diff(x, y int) int {
+	if x > y {
+		return x - y
+	}
+
+	return y - x
 }
 
 func (Puzzler) Part2(input []string) string {
