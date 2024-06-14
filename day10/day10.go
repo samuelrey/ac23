@@ -72,10 +72,6 @@ func (Puzzler) Part1(input []string) string {
 		}
 	}
 
-	stepByPositon := map[Position]int{}
-	for position, pipe := range actualPositions {
-
-	}
 	return "Part1 not yet implemented."
 }
 
