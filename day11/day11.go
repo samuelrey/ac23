@@ -28,42 +28,31 @@ func containsGalaxy(sector string) bool {
 	return re.MatchString(sector)
 }
 
-func (Puzzler) Part1(input []string) string {
-	rowsToExpand, colsToExpand := []int{}, []int{}
-
-	for i, row := range input {
-		if !containsGalaxy(row) {
-			rowsToExpand = append(rowsToExpand, i)
-		}
-	}
-
-	transposed := transposeSpace(input)
-
-	for i, row := range transposed {
-		if !containsGalaxy(row) {
-			colsToExpand = append(colsToExpand, i)
+func expandSpace(space []string) []string {
+	expandIndexes := []int{}
+	for i, sector := range space {
+		if !containsGalaxy(sector) {
+			expandIndexes = append(expandIndexes, i)
 		}
 	}
 
 	prev := 0
 	expanded := []string{}
-	for _, index := range colsToExpand {
-		expanded = append(expanded, transposed[prev:index]...)
-		expanded = append(expanded, strings.Repeat(".", len(transposed[0])))
+	for _, index := range expandIndexes {
+		expanded = append(expanded, space[prev:index]...)
+		expanded = append(expanded, strings.Repeat(".", len(space[0])))
 		prev = index
 	}
-	expanded = append(expanded, transposed[prev:]...)
+	expanded = append(expanded, space[prev:]...)
 
-	transposed = transposeSpace(expanded)
-	prev = 0
-	expanded = []string{}
-	for _, index := range rowsToExpand {
-		expanded = append(expanded, transposed[prev:index]...)
-		expanded = append(expanded, strings.Repeat(".", len(transposed[0])))
-		prev = index
-	}
-	expanded = append(expanded, transposed[prev:]...)
-	
+	return expanded
+}
+
+func (Puzzler) Part1(space []string) string {
+	space = expandSpace(space)
+	space = transposeSpace(space)
+	space = expandSpace(space)
+	space = transposeSpace(space)
 	return "Part1 not yet implemented."
 }
 
