@@ -12,6 +12,7 @@ import (
 	"ac23/day09"
 	"ac23/day10"
 	"ac23/day11"
+	"ac23/day12"
 	"bufio"
 	"fmt"
 	"log"
@@ -36,10 +37,11 @@ func main() {
 		"day09": day09.Puzzler{},
 		"day10": day10.Puzzler{},
 		"day11": day11.Puzzler{},
+		"day12": day12.Puzzler{},
 	}
 
-	day := "day11"
-	target := "input"
+	day := "day12"
+	target := "sample"
 
 	puzzler := puzzlerByID[day]
 
