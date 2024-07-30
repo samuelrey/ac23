@@ -2,6 +2,7 @@ package day12
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -10,17 +11,37 @@ type Puzzler struct {
 }
 
 func (Puzzler) Part1(input []string) string {
-	datum := ". 1"
+	datum := "????.######..#####. 1,6,5"
 	springs, damages := parseSpringDamage(datum)
 	fmt.Println(springs, damages)
 
-	i, j := 0, 0
-	for i < len(springs) && j < len(damages) {
-		k := damages[j]
-		for i < len(springs) && k > 0 {
-			
+	control := "????"
+	count := 1
+	var dfs func(string, int) int
+	dfs = func(control string, count int) int {
+		r := regexp.MustCompile(`\?`)
+		matches := r.FindAllStringIndex(control, -1)
+		if count == 0 && len(matches) == 0 {
+			return 1
 		}
+
+		if count == 0 || len(matches) == 0 {
+			return 0
+		}
+
+		sum := 0
+		for _, match := range matches {
+			index := match[0]
+			tmp := control[:index] + "#" + control[index+1:]
+			sum += dfs(tmp, count-1)
+
+			tmp = control[:index] + "." + control[index+1:]
+			sum += dfs(tmp, count)
+		}
+
+		return sum
 	}
+	fmt.Println(dfs(control, count))
 	return "Part1 not yet implemented."
 }
 
